@@ -3,16 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WALOW Browser - Multi-Tab System</title>
+    <title>WALOW Browser - AI & Media Hub</title>
     <style>
         :root {
             --bg-deep: #050b14;
             --surface: #0a1628;
-            --surface-hover: #13243e;
             --neon-cyan: #00f0ff;
             --neon-purple: #9d00ff;
             --text-main: #f0f4f8;
             --text-muted: #8ba2b8;
+        }
+
+        /* أنماط الخلفيات المختلفة */
+        body.theme-navy {
+            --bg-deep: #050b14;
+            --surface: #0a1628;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #9d00ff;
+        }
+        body.theme-cyber {
+            --bg-deep: #0f0518;
+            --surface: #1a0a2a;
+            --neon-cyan: #ff007f;
+            --neon-purple: #00f0ff;
+        }
+        body.theme-matrix {
+            --bg-deep: #020f08;
+            --surface: #052012;
+            --neon-cyan: #00ff66;
+            --neon-purple: #0088ff;
         }
 
         * {
@@ -28,6 +47,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background 0.3s ease;
         }
 
         /* شريط التبويبات العلوي */
@@ -160,54 +180,124 @@
             font-weight: bold;
         }
 
-        /* منطقة المحتوى الرئيسية */
+        /* لوحة التحكم والميزات */
         main {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
-            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .welcome-box {
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: var(--surface);
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .bg-switcher {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .bg-btn {
+            background: var(--bg-deep);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .bg-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        .section-title {
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            padding-bottom: 5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .feature-card {
             background: var(--surface);
             border: 1px solid rgba(0, 240, 255, 0.2);
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
         }
 
-        .welcome-box h2 {
+        .feature-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feature-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .feature-badge {
+            background: rgba(0, 240, 255, 0.1);
             color: var(--neon-cyan);
-            margin-bottom: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0, 240, 255, 0.3);
         }
 
-        .welcome-box p {
+        .feature-desc {
             color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            line-height: 1.5;
         }
 
-        /* إطار عرض المواقع داخل المتصفح */
-        .browser-frame {
-            flex: 1;
-            width: 100%;
+        .action-btn {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #fff;
             border: none;
-            background: #fff;
-            display: none;
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 5px;
         }
     </style>
 </head>
-<body>
+<body class="theme-navy">
 
     <!-- شريط التبويبات -->
     <div class="tabs-bar" id="tabsBar">
         <div class="tab active" onclick="selectTab(this)" data-id="1">
-            <span class="tab-title">تبويب جديد 1</span>
+            <span class="tab-title">WALOW Browser</span>
             <span class="close-tab" onclick="closeTab(event, this)">×</span>
         </div>
         <button class="add-tab-btn" onclick="addNewTab()" title="فتح تبويب جديد">+</button>
@@ -217,18 +307,64 @@
     <header>
         <div class="logo">WALOW</div>
         <div class="search-container">
-            <input type="text" id="urlInput" class="search-input" placeholder="ابحث في Google أو أدخل رابطاً..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="urlInput" class="search-input" placeholder="ابحث أو الصق رابطاً للتحميل والدبلجة..." onkeypress="handleKeyPress(event)">
         </div>
         <button class="go-btn" onclick="loadUrl()">ذهاب</button>
     </header>
 
-    <!-- منطقة عرض المحتوى أو الـ iframe -->
-    <main id="mainContainer">
-        <div class="welcome-box" id="welcomeBox">
-            <h2>مرحباً بك في WALOW Browser</h2>
-            <p>اكتب ما تريد البحث عنه في الأعلى واضغط "ذهاب" لتتصفح الويب بكامل الحرية!</p>
+    <!-- لوحة المحتوى والميزات -->
+    <main>
+        <!-- لوحة التحكم وتغيير الخلفيات -->
+        <div class="control-panel">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">🎨 تخصيص الثيم:</span>
+            <div class="bg-switcher">
+                <button class="bg-btn" onclick="setTheme('theme-navy')">أزرق عميق</button>
+                <button class="bg-btn" onclick="setTheme('theme-cyber')">سايبر بانك</button>
+                <button class="bg-btn" onclick="setTheme('theme-matrix')">أخضر ماتركس</button>
+            </div>
         </div>
-        <iframe id="browserFrame" class="browser-frame" src=""></iframe>
+
+        <div class="section-title">📥 مركز تنزيل الوسائط والملفات</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-title">تحميل الفيديوهات والريلز</span>
+                    <span class="feature-badge">Download Hub</span>
+                </div>
+                <div class="feature-desc">تنزيل مقاطع الفيديو والقصص والوسائط بأعلى جودة مباشرة إلى هاتفك.</div>
+                <button class="action-btn" onclick="triggerAction('تنزيل الوسائط والفيديوهات')">بدء التحميل</button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-title">مدير التحميلات الذكي</span>
+                    <span class="feature-badge">File Manager</span>
+                </div>
+                <div class="feature-desc">متابعة حالة الملفات والمستندات المحفوظة وتنظيمها داخل المتصفح.</div>
+                <button class="action-btn" onclick="triggerAction('فتح مدير التحميلات')">عرض الملفات</button>
+            </div>
+        </div>
+
+        <div class="section-title">🎙️ الذكاء الاصطناعي والدبلجة</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-title">دبلجة وترجمة الفيديوهات</span>
+                    <span class="feature-badge">AI Voice</span>
+                </div>
+                <div class="feature-desc">ترجمة ودبلجة صوت أي فيديو عالمي إلى اللغة العربية بصوت طبيعي.</div>
+                <button class="action-btn" onclick="triggerAction('تفعيل الدبلجة الصوتية')">تفعيل الدبلجة</button>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-title">تلخيص المحتوى بالذكاء الاصطناعي</span>
+                    <span class="feature-badge">AI Summary</span>
+                </div>
+                <div class="feature-desc">قراءة سريعة واستخراج الأفكار الرئيسية من مقاطع الفيديو والمواقع.</div>
+                <button class="action-btn" onclick="triggerAction('تلخيص المحتوى')">تلخيص فوري</button>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -252,7 +388,6 @@
 
             tabsBar.insertBefore(newTab, addBtn);
             document.getElementById('urlInput').value = '';
-            showWelcomeScreen();
         }
 
         function selectTab(tabElement) {
@@ -282,39 +417,25 @@
 
         function loadUrl() {
             const inputVal = document.getElementById('urlInput').value.trim();
-            const activeTabTitle = document.querySelector('.tab.active .tab-title');
-            const welcomeBox = document.getElementById('welcomeBox');
-            const browserFrame = document.getElementById('browserFrame');
-
             if (!inputVal) return;
 
             let targetUrl = inputVal;
-
-            // التحقق مما إذا كان المدخل رابطاً أو نص بحث عادي
             if (!inputVal.startsWith('http://') && !inputVal.startsWith('https://')) {
                 if (inputVal.includes('.') && !inputVal.includes(' ')) {
                     targetUrl = 'https://' + inputVal;
                 } else {
-                    // التوجيه للبحث في جوجل إذا لم يكن رابطاً
                     targetUrl = `https://www.google.com/search?q=${encodeURIComponent(inputVal)}`;
                 }
             }
-
-            // تحديث عنوان التبويب
-            if (activeTabTitle) {
-                activeTabTitle.textContent = inputVal;
-            }
-
-            // إخفاء رسالة الترحيب وعرض الموقع داخل الـ iframe
-            welcomeBox.style.display = 'none';
-            browserFrame.style.display = 'block';
-            browserFrame.src = targetUrl;
+            window.open(targetUrl, '_blank');
         }
 
-        function showWelcomeScreen() {
-            document.getElementById('welcomeBox').style.display = 'block';
-            document.getElementById('browserFrame').style.display = 'none';
-            document.getElementById('browserFrame').src = '';
+        function setTheme(themeName) {
+            document.body.className = themeName;
+        }
+
+        function triggerAction(actionName) {
+            alert(`جاري تنفيذ ميزة: ${actionName} في WALOW Browser بنجاح!`);
         }
     </script>
 </body>
