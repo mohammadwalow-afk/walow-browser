@@ -164,6 +164,7 @@
         main {
             flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
@@ -177,6 +178,7 @@
             border-radius: 20px;
             max-width: 500px;
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+            margin-bottom: 20px;
         }
 
         .welcome-box h2 {
@@ -188,6 +190,15 @@
             color: var(--text-muted);
             font-size: 0.95rem;
             line-height: 1.6;
+        }
+
+        /* إطار عرض المواقع داخل المتصفح */
+        .browser-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff;
+            display: none;
         }
     </style>
 </head>
@@ -204,19 +215,20 @@
 
     <!-- شريط العنوان -->
     <header>
-        <div class="logo">WALOW BROWSER</div>
+        <div class="logo">WALOW</div>
         <div class="search-container">
-            <input type="text" id="urlInput" class="search-input" placeholder="أدخل عنوان URL أو ابحث...">
+            <input type="text" id="urlInput" class="search-input" placeholder="ابحث في Google أو أدخل رابطاً..." onkeypress="handleKeyPress(event)">
         </div>
         <button class="go-btn" onclick="loadUrl()">ذهاب</button>
     </header>
 
-    <!-- منطقة عرض التبويبات -->
-    <main>
-        <div class="welcome-box">
+    <!-- منطقة عرض المحتوى أو الـ iframe -->
+    <main id="mainContainer">
+        <div class="welcome-box" id="welcomeBox">
             <h2>مرحباً بك في WALOW Browser</h2>
-            <p>يمكنك الآن فتح العشرات من التبويبات وإدارتها بحرية تامة من الشريط العلوي!</p>
+            <p>اكتب ما تريد البحث عنه في الأعلى واضغط "ذهاب" لتتصفح الويب بكامل الحرية!</p>
         </div>
+        <iframe id="browserFrame" class="browser-frame" src=""></iframe>
     </main>
 
     <script>
@@ -227,10 +239,8 @@
             const tabsBar = document.getElementById('tabsBar');
             const addBtn = document.querySelector('.add-tab-btn');
 
-            // إزالة التحديد عن التبويبات القديمة
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
 
-            // إنشاء تبويب جديد
             const newTab = document.createElement('div');
             newTab.className = 'tab active';
             newTab.setAttribute('onclick', 'selectTab(this)');
@@ -242,6 +252,7 @@
 
             tabsBar.insertBefore(newTab, addBtn);
             document.getElementById('urlInput').value = '';
+            showWelcomeScreen();
         }
 
         function selectTab(tabElement) {
@@ -263,12 +274,47 @@
             }
         }
 
-        function loadUrl() {
-            const url = document.getElementById('urlInput').value;
-            const activeTab = document.querySelector('.tab.active .tab-title');
-            if (url && activeTab) {
-                activeTab.textContent = url;
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                loadUrl();
             }
+        }
+
+        function loadUrl() {
+            const inputVal = document.getElementById('urlInput').value.trim();
+            const activeTabTitle = document.querySelector('.tab.active .tab-title');
+            const welcomeBox = document.getElementById('welcomeBox');
+            const browserFrame = document.getElementById('browserFrame');
+
+            if (!inputVal) return;
+
+            let targetUrl = inputVal;
+
+            // التحقق مما إذا كان المدخل رابطاً أو نص بحث عادي
+            if (!inputVal.startsWith('http://') && !inputVal.startsWith('https://')) {
+                if (inputVal.includes('.') && !inputVal.includes(' ')) {
+                    targetUrl = 'https://' + inputVal;
+                } else {
+                    // التوجيه للبحث في جوجل إذا لم يكن رابطاً
+                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(inputVal)}`;
+                }
+            }
+
+            // تحديث عنوان التبويب
+            if (activeTabTitle) {
+                activeTabTitle.textContent = inputVal;
+            }
+
+            // إخفاء رسالة الترحيب وعرض الموقع داخل الـ iframe
+            welcomeBox.style.display = 'none';
+            browserFrame.style.display = 'block';
+            browserFrame.src = targetUrl;
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('welcomeBox').style.display = 'block';
+            document.getElementById('browserFrame').style.display = 'none';
+            document.getElementById('browserFrame').src = '';
         }
     </script>
 </body>
