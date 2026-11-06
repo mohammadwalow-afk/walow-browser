@@ -4,11 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { AndroidStatusBar } from './components/components/AndroidStatusBar';
-import { Omnibar } from './components/components/Omnibar';
-import { AndroidNavBar } from './components/components/AndroidNavBar';
-import { SpeedDialHome } from './components/components/SpeedDialHome';
-import { WebPageView } from './components/components/WebPageView';
+import { AndroidStatusBar } from './components/AndroidStatusBar';
+import { Omnibar } from './components/Omnibar';
+import { AndroidNavBar } from './components/AndroidNavBar';
+import { SpeedDialHome } from './components/SpeedDialHome';
+import { WebPageView } from './components/WebPageView';
 import { VideoDubberModal } from './components/VideoDubberModal';
 import { VisualSearchModal } from './components/VisualSearchModal';
 import { AndroidAppInstallerModal } from './components/AndroidAppInstallerModal';
